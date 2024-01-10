@@ -5,7 +5,6 @@ from flask import Flask, jsonify, request
 import pymysql
 import io
 import pickle
-import cv2
 from PIL import Image
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
