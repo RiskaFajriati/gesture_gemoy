@@ -1,14 +1,11 @@
-from tensorflow.keras.models import load_model
 import numpy as np
-from flask_limiter import Limiter, RateLimitExceeded
-from flask_limiter.util import get_remote_address
 from tensorflow.keras.preprocessing.image import load_img
-from tensorflow.keras.applications.resnet50 import preprocess_input
-from tensorflow.keras.preprocessing import image
 from functools import wraps
 from flask import Flask, jsonify, request
 import pymysql
 import io
+import pickle
+import cv2
 from PIL import Image
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
@@ -21,13 +18,14 @@ import jwt
 load_dotenv()
 
 app = Flask(__name__)
-model = load_model('songket_brand_clf_resnet50.h5')
+pick_read = open('knn_model.pickle', 'rb')
+model = pickle.load(pick_read)
+pick_read.close()
 app.config['MYSQL_HOST'] = os.getenv("DB_HOST")
 app.config['MYSQL_USER'] = os.getenv("DB_USER")
 app.config['MYSQL_PASSWORD'] = os.getenv("DB_PASSWORD")
 app.config['MYSQL_DB'] = os.getenv("DB_NAME")
-# app.config['IMAGE_UPLOADS'] = "C:\\Users\\user\\Documents\\GitHub\\songketTA"
-app.config['IMAGE_UPLOADS'] = "/home/azureuser/songketTA"
+app.config['IMAGE_UPLOADS'] = "/home/azureuser/gesture_gemoy"
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 mysql = pymysql.connect(
     host=app.config['MYSQL_HOST'],
@@ -44,13 +42,6 @@ def get_user_id():
     return str(data['id'])
 
 
-# Limiter Instance
-limiter = Limiter(
-    get_remote_address,
-    app=app,
-    default_limits=["200 per day", "50 per hour"],
-    storage_uri="memory://"
-)
 
 # Validator Class
 
@@ -165,95 +156,31 @@ def signup():
 @app.route("/upload", methods=["POST"])
 @token_required
 def upload_image(current_user):
-    if current_user["status"] == 0:
-        try:
-            with limiter.limit("50 per day", key_func=get_user_id):
-                if request.files:
-                    # Check Image Mimetype
-                    file = request.files["image"]
-                    if (file.mimetype != 'image/jpeg' and file.mimetype != 'image/png') :
-                        return jsonify({"message": "Gunakan Format jpeg atau png!"}), 400
-                    print(file.mimetype)
-                    # Read Image
-                    # image = file.read()
-                    # image = Image.open(io.BytesIO(image))
-                    file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
-                    file.save(file_path)
-                    img = load_img(file_path, target_size=(224, 224))
-                    x = image.img_to_array(img)
-                    x = np.expand_dims(x, axis=0)
-                    x = preprocess_input(x)
-                    class_prediction=model.predict(x) 
-                    classes_x=np.argmax(class_prediction,axis=1)
-                    kelas = ''
-                    if classes_x.item() == 0 :
-                        kelas = 'Bintang Berante'
-                    elif classes_x.item() == 1 :
-                        kelas = 'Nago Besaung'
-                    elif classes_x.item() == 2 :
-                        kelas = 'Nampan Perak'
-                    elif classes_x.item() == 3 :
-                        kelas = 'Pulir'
-                    else :
-                        kelas = 'Jantung'
-                    # Do model prediction
-                    # delete photo
-                    os.remove(file_path)
-                    # Return response
-                    return jsonify({
-                        "message": "some-prediction value",
-                        "data": kelas
-                        }), 200
-                else:
-                    return jsonify({"message": "Somethink went wronk"}), 400
-        except RateLimitExceeded:
-            data = {"message": "Limit Exceed"}
-            return jsonify(data), 429
+    if request.files:
+        # Check Image Mimetype
+        file = request.files["image"]
+        if (file.mimetype != 'image/jpeg' and file.mimetype != 'image/png') :
+            return jsonify({"message": "Gunakan Format jpeg atau png!"}), 400
+        print(file.mimetype)
+        # Read Image
+        # image = file.read()
+        # image = Image.open(io.BytesIO(image))
+        file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
+        file.save(file_path)
+        img = load_img(file_path, target_size=(100, 100))
+        pca = extract_features(img)
+        print(pca[0].shape)
+        hehe = model.predict(pca[0].reshape(1, -1))
+        # Do model prediction
+        # delete photo
+        os.remove(file_path)
+        # Return response
+        return jsonify({
+            "message": "some-prediction value",
+            "data": hehe
+            }), 200
     else:
-        try:
-            with limiter.limit("75 per day", key_func=get_user_id):
-                if request.files:
-                    # Check Image Mimetype
-                    file = request.files["image"]
-                    if (file.mimetype != 'image/jpeg' and file.mimetype != 'image/png') :
-                        return jsonify({"message": "Gunakan Format jpeg atau png!"}), 400
-                    print(file.mimetype)
-                    # Read Image
-                    # image = file.read()
-                    # image = Image.open(io.BytesIO(image))
-                    file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
-                    file.save(file_path)
-                    img = load_img(file_path, target_size=(224, 224))
-                    x = image.img_to_array(img)
-                    x = np.expand_dims(x, axis=0)
-                    x = preprocess_input(x)
-                    class_prediction=model.predict(x) 
-                    classes_x=np.argmax(class_prediction,axis=1)
-                    kelas = ''
-                    if classes_x.item() == 0 :
-                        kelas = 'Bintang Berante'
-                    elif classes_x.item() == 1 :
-                        kelas = 'Nago Besaung'
-                    elif classes_x.item() == 2 :
-                        kelas = 'Nampan Perak'
-                    elif classes_x.item() == 3 :
-                        kelas = 'Pulir'
-                    else :
-                        kelas = 'Jantung'
-                    # Do model prediction
-                    # delete photo
-                    os.remove(file_path)
-                    # Return response
-                    return jsonify({
-                        "message": "some-prediction value",
-                        "data": kelas
-                        }), 200
-                else:
-                    return jsonify({"message": "Somethink went wronk"}), 400
-        except RateLimitExceeded:
-            data = {"message": "Limit Exceed"}
-            return jsonify(data), 429
-        
+        return jsonify({"message": "Somethink went wronk"}), 400
 
 ######################################################################
 
