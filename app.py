@@ -163,8 +163,7 @@ def masa_depan_cerah():
 
 ######################## Do SOmethink here ############################
 @app.route("/upload", methods=["POST"])
-@token_required
-def upload_image(current_user):
+def upload_image():
     if request.files:
         # Check Image Mimetype
         file = request.files["image"]
@@ -183,7 +182,8 @@ def upload_image(current_user):
         hehe = model.predict(pca[0].reshape(1, -1))
         # Do model prediction
         # delete photo
-        os.remove(file_path)
+        if os.path.exists(file_path):
+            os.remove(file_path)
         # Return response
         return jsonify({
             "message": "Hasil Klasifikasi",
