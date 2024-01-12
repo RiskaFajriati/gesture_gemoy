@@ -1,11 +1,11 @@
 import numpy as np
-from tensorflow.keras.preprocessing.image import load_img
+from sklearn.decomposition import PCA
 from functools import wraps
 from flask import Flask, jsonify, request
 import pymysql
+import cv2
 import io
 import pickle
-import cv2
 from PIL import Image
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
@@ -167,8 +167,9 @@ def upload_image(current_user):
         # image = Image.open(io.BytesIO(image))
         file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
         file.save(file_path)
-        img = load_img(file_path, target_size=(100, 100))
-        pca = extract_features(img)
+        img = cv2.imread(file_path, cv2.COLOR_BGR2RGB)
+        imgResize = cv2.resize(img, (100, 100))
+        pca = extract_features(imgResize)
         print(pca[0].shape)
         hehe = model.predict(pca[0].reshape(1, -1))
         # Do model prediction
@@ -176,84 +177,14 @@ def upload_image(current_user):
         os.remove(file_path)
         # Return response
         return jsonify({
-            "message": "some-prediction value",
-            "data": hehe
+            "message": "Hasil Klasifikasi",
+            "data": hehe.item()
             }), 200
     else:
         return jsonify({"message": "Somethink went wronk"}), 400
 
 ######################################################################
 
-
-##################### Hello Wolrd #########################
-@app.route('/', methods=['GET'])
-@token_required
-def helloworld(current_user):
-    if (request.method == 'GET'):
-        data = {"data": "Hello World"}
-        return jsonify(data)
-
-@app.route('/check', methods=['GET'])
-@token_required
-def check_limit(current_user):
-    if current_user["status"] == 0:
-        try:
-            with limiter.limit("50 per day", key_func=get_user_id):
-                data = {"data": "Hello Misqueen"}
-                return jsonify(data)
-        except RateLimitExceeded:
-            data = {"message": "Limit Exceed"}
-            return jsonify(data), 429
-    else:
-        try:
-            with limiter.limit("75 per day", key_func=get_user_id):
-                data = {"data": "Hello Sultan"}
-                return jsonify(data)
-        except RateLimitExceeded:
-            data = {"message": "Limit Exceed"}
-            return jsonify(data), 429
-            
-    
-##################### All users #########################
-@app.route('/users', methods=['GET'])
-@token_required
-def getUsers(current_user):
-    try:
-        items = []
-        cur = mysql.cursor()
-        cur.execute('''SELECT * FROM users''')
-        data = cur.fetchall()
-        cur.close()
-        for item in data:
-            item = {
-                'id': item[0],
-                'user': item[1],
-                'password': item[2],
-                'status': item[3],
-            }
-            items.append(item)
-        return jsonify(items), 200
-    except Exception as e:
-        item = {
-            'status': False,
-            'message': f"{e}",
-        }
-        items.append(item)
-        return jsonify(items), 500
-
-
-##################### User By Id #########################
-@app.route('/users/<int:id>', methods=['GET'])
-def getUserById(id):
-    try:
-        response = getUsersbyId(id)
-        return jsonify(response), 200
-    except Exception as e:
-        response = {
-            'status': False,
-            'message': f"{e}",
-        }
-        return jsonify(response), 500
 
 ################### Handle Not Found #####################
 
@@ -298,6 +229,16 @@ def getUsersbyUsername(params):
         }
     return response
 
+def extract_features(images):
+    features = []
+    for image in images:
+        flattened_image = image.flatten()
+        features.append(flattened_image)
+
+    pca = PCA(n_components=50)  # Ubah jumlah komponen sesuai kebutuhan
+    reduced_features = pca.fit_transform(features)
+
+    return reduced_features
 
 if __name__ == '__main__':
     app.run()
