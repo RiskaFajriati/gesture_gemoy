@@ -1,3 +1,4 @@
+from random import randint
 import numpy as np
 from sklearn.decomposition import PCA
 from functools import wraps
@@ -150,6 +151,14 @@ def signup():
             return jsonify({"message": "Username sudah ada."}), 400
     except Exception as e:
         return jsonify({"message": e}), 400
+
+######################## TEst ############################
+@app.route("/test", methods=["GET"])
+def masa_depan_cerah():
+    return jsonify({
+        "message": "Hasil Klasifikasi",
+        "data": randint(1, 10)
+        }), 200
 
 
 ######################## Do SOmethink here ############################
