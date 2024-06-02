@@ -170,7 +170,6 @@ def upload_image():
         img = cv2.imread(file_path, cv2.COLOR_BGR2RGB)
         imgResize = cv2.resize(img, (192, 192))
         pca = extract_features(imgResize)
-        print(pca[0].shape)
         hehe = model.predict(pca[0].reshape(1, -1))
         # Do model prediction
         # delete photo
