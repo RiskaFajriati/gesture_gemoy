@@ -168,7 +168,7 @@ def upload_image():
         file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
         file.save(file_path)
         img = cv2.imread(file_path, cv2.COLOR_BGR2RGB)
-        img_resize =  cv2.resize(img, (192, 192)),
+        img_resize =  cv2.resize(img, 192),
         pca = extract_features(img_resize)
         print(pca[0].shape)
         hehe = model.predict(pca[0].reshape(1, -1))
