@@ -171,8 +171,7 @@ def upload_image():
         file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
         file.save(file_path)
         img = cv2.imread(file_path, cv2.COLOR_BGR2RGB)
-        print(pca[0].shape)
-        hehe = model.predict(pca[0].reshape(1, -1))
+        hehe = model.predict(img.reshape(1, -1))
         # Do model prediction
         # delete photo
         if os.path.exists(file_path):
