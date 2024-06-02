@@ -12,7 +12,6 @@ import os
 import jwt
 
 # #################### ENV #########################
-load_dotenv()
 
 app = Flask(__name__)
 pick_read = open('knn_model.pickle', 'rb')
