@@ -9,7 +9,6 @@ from PIL import Image
 import os
 
 # #################### ENV #########################
-load_dotenv()
 
 app = Flask(__name__)
 pick_read = open('knn_model.pickle', 'rb')
