@@ -4,14 +4,12 @@ from sklearn.decomposition import PCA
 from functools import wraps
 from flask import Flask, jsonify, request
 import cv2
-import io
 import pickle
 from PIL import Image
-from datetime import datetime, timedelta
 import os
-import jwt
 
 # #################### ENV #########################
+load_dotenv()
 
 app = Flask(__name__)
 pick_read = open('knn_model.pickle', 'rb')
@@ -41,23 +39,23 @@ app.config['IMAGE_UPLOADS'] = "/home/azureuser/gesture_gemoy"
 
 # Validator Class
 
-# class LoginSchema(Schema):
-#     user = fields.String(
-#         required=True,
-#         validate=validate.Length(4),
-#         error_messages={
-#             "required": "Username harus diisi",
-#             "validator_failed": "Username minimal 4 huruf"
-#         }
-#     )
-#     password = fields.String(
-#         required=True,
-#         validate=validate.Length(8),
-#         error_messages={
-#             "required": "Password harus diisi",
-#             "validator_failed": "Password minimal 8 huruf"
-#         }
-#     )
+class LoginSchema(Schema):
+    user = fields.String(
+        required=True,
+        validate=validate.Length(4),
+        error_messages={
+            "required": "Username harus diisi",
+            "validator_failed": "Username minimal 4 huruf"
+        }
+    )
+    password = fields.String(
+        required=True,
+        validate=validate.Length(8),
+        error_messages={
+            "required": "Password harus diisi",
+            "validator_failed": "Password minimal 8 huruf"
+        }
+    )
 
 
 
@@ -65,31 +63,31 @@ app.config['IMAGE_UPLOADS'] = "/home/azureuser/gesture_gemoy"
 ##################### JWT #########################
 
 
-# def token_required(f):
-#     @wraps(f)
-#     def decorated(*args, **kwargs):
-#         token = None
-#         # jwt is passed in the request header
-#         if 'Authorization' in request.headers:
-#             headers = request.headers['Authorization']
-#             token = headers.split()[1]
-#         # return 401 if token is not passed
-#         if not token:
-#             return jsonify({'message': 'Token tidak ditemukan !!'}), 401
-#         try:
-#             # decoding the payload to fetch the stored details
-#             data = jwt.decode(
-#                 token, app.config['SECRET_KEY'], algorithms=['HS256'])
-#             current_user = getUsersbyId(data['id'])
-#         except Exception as e:
-#             print(e)
-#             return jsonify({
-#                 'message': 'Token tidak valid !!'
-#             }), 401
-#         # returns the current logged in users context to the routes
-#         return f(current_user, *args, **kwargs)
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        # jwt is passed in the request header
+        if 'Authorization' in request.headers:
+            headers = request.headers['Authorization']
+            token = headers.split()[1]
+        # return 401 if token is not passed
+        if not token:
+            return jsonify({'message': 'Token tidak ditemukan !!'}), 401
+        try:
+            # decoding the payload to fetch the stored details
+            data = jwt.decode(
+                token, app.config['SECRET_KEY'], algorithms=['HS256'])
+            current_user = getUsersbyId(data['id'])
+        except Exception as e:
+            print(e)
+            return jsonify({
+                'message': 'Token tidak valid !!'
+            }), 401
+        # returns the current logged in users context to the routes
+        return f(current_user, *args, **kwargs)
 
-#     return decorated
+    return decorated
 
 
 ##################### Login #########################
@@ -171,7 +169,10 @@ def upload_image():
         file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
         file.save(file_path)
         img = cv2.imread(file_path, cv2.COLOR_BGR2RGB)
-        hehe = model.predict(img.reshape(1, -1))
+        imgResize = cv2.resize(img, (100, 100))
+        pca = extract_features(imgResize)
+        print(pca[0].shape)
+        hehe = model.predict(pca[0].reshape(1, -1))
         # Do model prediction
         # delete photo
         if os.path.exists(file_path):
@@ -192,44 +193,21 @@ def upload_image():
 
 @app.errorhandler(404)
 def not_found_error(e):
-    return jsonify({'message': 'Not Found'}), 404   
+    return jsonify({'message': 'Not Found'}), 404
 
 ################## Custom Function #####################
 
 
-# def getUsersbyId(params):
-#     cur = mysql.cursor()
-#     cur.execute('''SELECT * FROM users WHERE id = %s''', (params,))
-#     data = cur.fetchall()
-#     cur.close()
-#     if not data:
-#         response = None
-#     else:
-#         response = {
-#             'id': data[0][0],
-#             'user': data[0][1],
-#             'password': data[0][2],
-#             'status': data[0][3],
-#         }
-#     return response
+def extract_features(images):
+    features = []
+    for image in images:
+        flattened_image = image.flatten()
+        features.append(flattened_image)
 
+    pca = PCA(n_components=15)  # Ubah jumlah komponen sesuai kebutuhan
+    reduced_features = pca.fit_transform(features)
 
-# def getUsersbyUsername(params):
-#     cur = mysql.cursor()
-#     cur.execute('''SELECT * FROM users WHERE user = %s''', (params,))
-#     data = cur.fetchall()
-#     cur.close()
-#     if not data:
-#         response = None
-#     else:
-#         response = {
-#             'id': data[0][0],
-#             'user': data[0][1],
-#             'password': data[0][2],
-#             'status': data[0][3],
-#         }
-#     return response
-
+    return reduced_features
 
 if __name__ == '__main__':
     app.run()
