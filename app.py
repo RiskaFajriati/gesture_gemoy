@@ -176,7 +176,7 @@ def upload_image():
         if os.path.exists(file_path):
             os.remove(file_path)
         # Return response
-        print(hehe)
+        print(pca)
         return jsonify({
             "message": "Hasil Klasifikasi",
             "data": hehe.item()
