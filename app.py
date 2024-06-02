@@ -163,7 +163,7 @@ def upload_image():
         # Check Image Mimetype
         file = request.files["image"]
         if (file.mimetype != 'image/jpeg' and file.mimetype != 'image/png') :
-            return jsonify({"message Gunakan Format jpeg atau png!"}), 400
+            return jsonify({"message": "Gunakan Format jpeg atau png!"}), 400
         print(file.mimetype)
         # Read Image
         # image = file.read()
