@@ -38,23 +38,23 @@ app.config['IMAGE_UPLOADS'] = "/home/azureuser/gesture_gemoy"
 
 # Validator Class
 
-class LoginSchema(Schema):
-    user = fields.String(
-        required=True,
-        validate=validate.Length(4),
-        error_messages={
-            "required": "Username harus diisi",
-            "validator_failed": "Username minimal 4 huruf"
-        }
-    )
-    password = fields.String(
-        required=True,
-        validate=validate.Length(8),
-        error_messages={
-            "required": "Password harus diisi",
-            "validator_failed": "Password minimal 8 huruf"
-        }
-    )
+# class LoginSchema(Schema):
+#     user = fields.String(
+#         required=True,
+#         validate=validate.Length(4),
+#         error_messages={
+#             "required": "Username harus diisi",
+#             "validator_failed": "Username minimal 4 huruf"
+#         }
+#     )
+#     password = fields.String(
+#         required=True,
+#         validate=validate.Length(8),
+#         error_messages={
+#             "required": "Password harus diisi",
+#             "validator_failed": "Password minimal 8 huruf"
+#         }
+#     )
 
 
 
