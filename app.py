@@ -3,16 +3,12 @@ import numpy as np
 from sklearn.decomposition import PCA
 from functools import wraps
 from flask import Flask, jsonify, request
-import pymysql
 import cv2
 import io
 import pickle
 from PIL import Image
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from werkzeug.security import generate_password_hash, check_password_hash
 import os
-from marshmallow import Schema, fields, validate
 import jwt
 
 # #################### ENV #########################
@@ -176,8 +172,6 @@ def upload_image():
         file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
         file.save(file_path)
         img = cv2.imread(file_path, cv2.COLOR_BGR2RGB)
-        imgResize = cv2.resize(img, (100, 100))
-        pca = extract_features(imgResize)
         print(pca[0].shape)
         hehe = model.predict(pca[0].reshape(1, -1))
         # Do model prediction
