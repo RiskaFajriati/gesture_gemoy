@@ -21,7 +21,7 @@ pick_read.close()
 # app.config['MYSQL_USER'] = os.getenv("DB_USER")
 # app.config['MYSQL_PASSWORD'] = os.getenv("DB_PASSWORD")
 # app.config['MYSQL_DB'] = os.getenv("DB_NAME")
-# app.config['IMAGE_UPLOADS'] = "/home/azureuser/gesture_gemoy"
+app.config['IMAGE_UPLOADS'] = "/home/azureuser/gesture_gemoy"
 # app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 # mysql = pymysql.connect(
 #     host=app.config['MYSQL_HOST'],
