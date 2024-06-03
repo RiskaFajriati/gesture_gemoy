@@ -185,7 +185,7 @@ def upload_image():
             formatted_probs = [f"{prob:.2f}" for prob in probs]
             print(formatted_probs)
 
-        for index, nilai in enumerate(hehe2):
+        for index, nilai in enumerate(hehe2[0]):
             if nilai != '0.00':
                 print(f"Index: {index}, Nilai: {nilai}")
 
