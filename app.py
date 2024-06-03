@@ -185,18 +185,36 @@ def upload_image():
             formatted_probs = [f"{prob:.2f}" for prob in probs]
             print(formatted_probs)
 
-        for index, nilai in enumerate(hehe2[0]):
+        # Menyimpan indeks dan nilai yang bukan nol
+        indeks = []
+        nilai_probabilitas = []
+
+        for index, nilai in enumerate(hehe2):
             if nilai != '0.00':
-                print(f"Index: {index}, Nilai: {nilai}")
+                indeks.append(index)
+                nilai_probabilitas.append(nilai)
 
-                # Membuat string untuk probabilitas
-                probabilitas_string = ",".join([f"{prob:.2f}" for prob in nilai])
+        # Membuat string untuk probabilitas
+        probabilitas_string = ",".join(nilai_probabilitas)
 
-                # Membuat string untuk indeks
-                indeks_string = ",".join([str(idx) for idx in index])
+        # Membuat string untuk indeks
+        indeks_string = ",".join(map(str, indeks))
 
-                # Membentuk string lengkap
-                output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
+        # Membentuk string lengkap
+        output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
+
+        # for index, nilai in enumerate(hehe2[0]):
+        #     if nilai != '0.00':
+        #         print(f"Index: {index}, Nilai: {nilai}")
+
+        #         # Membuat string untuk probabilitas
+        #         probabilitas_string = ",".join([f"{prob:.2f}" for prob in nilai])
+
+        #         # Membuat string untuk indeks
+        #         indeks_string = ",".join([str(idx) for idx in index])
+
+        #         # Membentuk string lengkap
+        #         output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
 
         print(output_string)
 
