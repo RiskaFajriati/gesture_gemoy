@@ -194,14 +194,14 @@ def upload_image():
                 indeks.append(index)
                 nilai_probabilitas.append(nilai)
 
-        # Membuat string untuk probabilitas
-        probabilitas_string = ",".join(nilai_probabilitas)
+                # Membuat string untuk probabilitas
+                probabilitas_string = ",".join(nilai_probabilitas)
 
-        # Membuat string untuk indeks
-        indeks_string = ",".join(map(str, indeks))
+                # Membuat string untuk indeks
+                indeks_string = ",".join(map(str, indeks))
 
-        # Membentuk string lengkap
-        output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
+                # Membentuk string lengkap
+                output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
 
         # for index, nilai in enumerate(hehe2[0]):
         #     if nilai != '0.00':
