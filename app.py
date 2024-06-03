@@ -183,7 +183,7 @@ def upload_image():
         return jsonify({
             "message": "Hasil Klasifikasi",
             "data": hehe.item(),
-            "data2": hehe2.item()
+            "data2": hehe2
             }), 200
     else:
         return jsonify({"message": "Somethink went wronk"}), 400
