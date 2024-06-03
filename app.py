@@ -180,10 +180,13 @@ def upload_image():
         print(pca)
         print(hehe)
         print(hehe2)
+        print("Predicted Probabilities:")
+        for probs in hehe2:
+            formatted_probs = [f"{prob:.2f}" for prob in probs]
+            print(formatted_probs)
         return jsonify({
             "message": "Hasil Klasifikasi",
-            "data": hehe.item(),
-            "data2": hehe2
+            "data": hehe.item()
             }), 200
     else:
         return jsonify({"message": "Somethink went wronk"}), 400
