@@ -191,6 +191,7 @@ def upload_image():
 
         for index, nilai in enumerate(hehe2):
             if nilai != '0.00':
+                print(f"Index: {index}, Nilai: {nilai}")
                 indeks.append(index)
                 nilai_probabilitas.append(nilai)
 
