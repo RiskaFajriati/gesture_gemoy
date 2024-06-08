@@ -171,15 +171,15 @@ def upload_image():
         imgResize = cv2.resize(img, (192, 192))
         pca = extract_features(imgResize)
         hehe = model.predict(pca[0].reshape(1, -1))
-        hehe2 = model.predict_proba(pca[0].reshape(1, -1))
+        # hehe2 = model.predict_proba(pca[0].reshape(1, -1))
         # Do model prediction
         # delete photo
         if os.path.exists(file_path):
             os.remove(file_path)
         # Return response
-        print(pca)
+        # print(pca)
         print(hehe)
-        print(hehe2)
+        # print(hehe2)
         # print("Predicted Probabilities:")
         # for probs in hehe2:
         #     formatted_probs = [f"{prob:.2f}" for prob in probs]
