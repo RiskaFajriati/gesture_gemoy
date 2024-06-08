@@ -180,29 +180,29 @@ def upload_image():
         print(pca)
         print(hehe)
         print(hehe2)
-        print("Predicted Probabilities:")
-        for probs in hehe2:
-            formatted_probs = [f"{prob:.2f}" for prob in probs]
-            print(formatted_probs)
+        # print("Predicted Probabilities:")
+        # for probs in hehe2:
+        #     formatted_probs = [f"{prob:.2f}" for prob in probs]
+        #     print(formatted_probs)
 
-        # Menyimpan indeks dan nilai yang bukan nol
-        indeks = []
-        nilai_probabilitas = []
+        # # Menyimpan indeks dan nilai yang bukan nol
+        # indeks = []
+        # nilai_probabilitas = []
 
-        for index, nilai in enumerate(hehe2[0]):
-            if nilai != '0.00':
-                print(f"Index: {index}, Nilai: {nilai}")
-                indeks.append(index)
-                nilai_probabilitas.append(nilai)
+        # for index, nilai in enumerate(hehe2[0]):
+        #     if nilai != '0.00':
+        #         print(f"Index: {index}, Nilai: {nilai}")
+        #         indeks.append(index)
+        #         nilai_probabilitas.append(nilai)
 
-                # Membuat string untuk probabilitas
-                probabilitas_string = ",".join(nilai_probabilitas)
+        #         # Membuat string untuk probabilitas
+        #         probabilitas_string = ",".join(nilai_probabilitas)
 
-                # Membuat string untuk indeks
-                indeks_string = ",".join(map(str, indeks))
+        #         # Membuat string untuk indeks
+        #         indeks_string = ",".join(map(str, indeks))
 
-                # Membentuk string lengkap
-                output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
+        #         # Membentuk string lengkap
+        #         output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
 
         # for index, nilai in enumerate(hehe2[0]):
         #     if nilai != '0.00':
@@ -217,7 +217,7 @@ def upload_image():
         #         # Membentuk string lengkap
         #         output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
 
-        print(output_string)
+        # print(output_string)
 
         return jsonify({
             "message": "Hasil Klasifikasi",
