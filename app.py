@@ -245,7 +245,7 @@ def extract_features(images):
         flattened_image = image.flatten()
         features.append(flattened_image)
 
-    pca = PCA(n_components=68)  # Ubah jumlah komponen sesuai kebutuhan
+    pca = PCA(n_components=65)  # Ubah jumlah komponen sesuai kebutuhan
     reduced_features = pca.fit_transform(features)
 
     return reduced_features
