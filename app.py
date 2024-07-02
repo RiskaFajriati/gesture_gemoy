@@ -223,11 +223,10 @@ def upload_image():
         # print(output_string)
 
         tdur = time.perf_counter_ns() - t0
-        print(f"\nDURASI = {tdur/1e6} ms")
         return jsonify({
             "message": "Hasil Klasifikasi",
             "data": hehe.item(),
-            "waktu":tdur/1e6
+            "waktu":tdur/1e9
             }), 200
     else:
         return jsonify({"message": "Somethink went wronk"}), 400
