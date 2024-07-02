@@ -7,6 +7,7 @@ import cv2
 import pickle
 from PIL import Image
 import os
+import time
 
 # #################### ENV #########################
 
@@ -158,6 +159,8 @@ def masa_depan_cerah():
 def upload_image():
     if request.files:
         # Check Image Mimetype
+        t0 = time.perf_counter_ns()
+
         file = request.files["image"]
         if (file.mimetype != 'image/jpeg' and file.mimetype != 'image/png') :
             return jsonify({"message": "Gunakan Format jpeg atau png!"}), 400
@@ -219,6 +222,8 @@ def upload_image():
 
         # print(output_string)
 
+        tdur = time.perf_counter_ns() - t0
+        print(f"\nDURASI = {tdur/1e6} ms")
         return jsonify({
             "message": "Hasil Klasifikasi",
             "data": hehe.item()
