@@ -226,7 +226,8 @@ def upload_image():
         print(f"\nDURASI = {tdur/1e6} ms")
         return jsonify({
             "message": "Hasil Klasifikasi",
-            "data": hehe.item()
+            "data": hehe.item(),
+            "waktu":tdur/1e6
             }), 200
     else:
         return jsonify({"message": "Somethink went wronk"}), 400
