@@ -171,7 +171,7 @@ def upload_image():
         file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
         file.save(file_path)
         img = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
-        imgResize = cv2.resize(img, (65, 65))
+        imgResize = cv2.resize(img, (66, 66))
         pca = extract_features(imgResize)
         hehe = model.predict(pca[0].reshape(1, -1))
         # hehe2 = model.predict_proba(pca[0].reshape(1, -1))
@@ -250,7 +250,7 @@ def extract_features(images):
         flattened_image = image.flatten()
         features.append(flattened_image)
 
-    pca = PCA(n_components=65)  # Ubah jumlah komponen sesuai kebutuhan
+    pca = PCA(n_components=66)  # Ubah jumlah komponen sesuai kebutuhan
     reduced_features = pca.fit_transform(features)
 
     return reduced_features
