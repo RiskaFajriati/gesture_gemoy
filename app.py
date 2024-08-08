@@ -182,6 +182,9 @@ def upload_image():
         # Return response
         # print(pca)
         print(hehe)
+
+        img.putdata(img)
+        img.save('image.png')
         # print(hehe2)
         # print("Predicted Probabilities:")
         # for probs in hehe2:
