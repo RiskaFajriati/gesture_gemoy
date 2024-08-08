@@ -183,11 +183,17 @@ def upload_image():
         # print(pca)
         print(hehe)
 
-        imgs = Image.new('RGB', (200, 200))
+        # imgs = Image.new('RGB', (200, 200))
+
+        width, height = 256, 256
+        data = np.random.rand(height, width, 3) * 255  # Random RGB values
+        data = data.astype(np.uint8)  # Convert to unsigned 8-bit integer
+        image = Image.fromarray(data, 'RGB')
+        image.save('random_image.png')
 
 
-        imgs.putdata(img)
-        imgs.save('imageori.png')
+        # # imgs.putdata(img)
+        # imgs.save('imageori.png')
         # print(hehe2)
         # print("Predicted Probabilities:")
         # for probs in hehe2:
