@@ -187,7 +187,7 @@ def upload_image():
 
         width, height = 256, 256
         # data = np.random.rand(height, width, 3) * 255  # Random RGB values
-        data = pca
+        data = imgResize
         data = data.astype(np.uint8)  # Convert to unsigned 8-bit integer
         image = Image.fromarray(data, 'RGB')
         image.save('random_image.png')
