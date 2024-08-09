@@ -188,7 +188,7 @@ def upload_image():
         print(type(imgResize))
 
         file_path = os.path.join('static', file.filename)
-        image = Image.fromarray(pca, 'RGB') # ubah pca dengan variable yang dinginkan
+        image = Image.fromarray(img, 'RGB') # ubah pca dengan variable yang dinginkan
         image.save(file_path, format='PNG')
 
 
