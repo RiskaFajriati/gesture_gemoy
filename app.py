@@ -11,7 +11,7 @@ import time
 
 # #################### ENV #########################
 
-app = Flask(__name__)
+app = Flask(_name_)
 pick_read = open('knn_model.pickle', 'rb')
 model = pickle.load(pick_read)
 pick_read.close()
@@ -153,6 +153,9 @@ def masa_depan_cerah():
         "data": randint(1, 10)
         }), 200
 
+@app.route('/static/<path:filename>')
+def serve_public_file(filename):
+    return send_from_directory('static', filename)
 
 ######################## Do SOmethink here ############################
 @app.route("/upload", methods=["POST"])
@@ -180,65 +183,24 @@ def upload_image():
         if os.path.exists(file_path):
             os.remove(file_path)
         # Return response
-        # print(pca)
-        print(hehe)
+        
+        # FOTO
+        print(type(imgResize))
 
-        # imgs = Image.new('RGB', (200, 200))
-
-        width, height = 256, 256
-        # data = np.random.rand(height, width, 3) * 255  # Random RGB values
-        data = imgResize
-        data = data.astype(np.uint8)  # Convert to unsigned 8-bit integer
-        image = Image.fromarray(data, 'RGB')
-        image.save('random_image.png')
+        file_path = os.path.join('static', file.filename)
+        image = Image.fromarray(pca, 'RGB') # ubah pca dengan variable yang dinginkan
+        image.save(file_path, format='PNG')
 
 
-        # # imgs.putdata(img)
-        # imgs.save('imageori.png')
-        # print(hehe2)
-        # print("Predicted Probabilities:")
-        # for probs in hehe2:
-        #     formatted_probs = [f"{prob:.2f}" for prob in probs]
-        #     print(formatted_probs)
+       
 
-        # # Menyimpan indeks dan nilai yang bukan nol
-        # indeks = []
-        # nilai_probabilitas = []
-
-        # for index, nilai in enumerate(hehe2[0]):
-        #     if nilai != '0.00':
-        #         print(f"Index: {index}, Nilai: {nilai}")
-        #         indeks.append(index)
-        #         nilai_probabilitas.append(nilai)
-
-        #         # Membuat string untuk probabilitas
-        #         probabilitas_string = ",".join(nilai_probabilitas)
-
-        #         # Membuat string untuk indeks
-        #         indeks_string = ",".join(map(str, indeks))
-
-        #         # Membentuk string lengkap
-        #         output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
-
-        # for index, nilai in enumerate(hehe2[0]):
-        #     if nilai != '0.00':
-        #         print(f"Index: {index}, Nilai: {nilai}")
-
-        #         # Membuat string untuk probabilitas
-        #         probabilitas_string = ",".join([f"{prob:.2f}" for prob in nilai])
-
-        #         # Membuat string untuk indeks
-        #         indeks_string = ",".join([str(idx) for idx in index])
-
-        #         # Membentuk string lengkap
-        #         output_string = f"probabilitas : {probabilitas_string}\nindex : {indeks_string}"
-
-        # print(output_string)
-
+        baseUrl = 'http://4.145.113.194:5000/static/'
+        fileUrl = f'{baseUrl}{file.filename}'
         tdur = time.perf_counter_ns() - t0
         return jsonify({
             "message": "Hasil Klasifikasi",
             "data": hehe.item(),
+            "link": fileUrl,
             "waktu":tdur/1e9
             }), 200
     else:
@@ -268,5 +230,5 @@ def extract_features(images):
 
     return reduced_features
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     app.run()
