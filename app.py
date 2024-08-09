@@ -191,6 +191,7 @@ def upload_image():
         image = Image.fromarray(pca, 'RGB') # ubah pca dengan variable yang dinginkan
         image.save(file_path, format='PNG')
 
+        hehe
 
        
 
