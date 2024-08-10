@@ -12,9 +12,14 @@ import time
 # #################### ENV #########################
 
 app = Flask(_name_)
-pick_read = open('knn_model.pickle', 'rb')
-model = pickle.load(pick_read)
-pick_read.close()
+pick_read1 = open('knn_model.pickle', 'rb')
+model_1 = pickle.load(pick_read1)
+pick_read1.close()
+
+
+pick_read2 = open('pca_model.pickle', 'rb')
+model_2 = pickle.load(pick_read2)
+pick_read2.close()
 # app.config['MYSQL_HOST'] = os.getenv("DB_HOST")
 # app.config['MYSQL_USER'] = os.getenv("DB_USER")
 # app.config['MYSQL_PASSWORD'] = os.getenv("DB_PASSWORD")
@@ -174,9 +179,11 @@ def upload_image():
         file_path = os.path.join(app.config["IMAGE_UPLOADS"], file.filename)
         file.save(file_path)
         img = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
-        imgResize = cv2.resize(img, (63, 63))
-        pca = extract_features(imgResize)
-        hehe = model.predict(pca[0].reshape(1, -1))
+        imgResize = cv2.resize(img, (150, 150))
+        image_vector = imgResize.flatten()
+        pca = model_2(image_vector)
+        hehe = model_1.predict(pca[0].reshape(1, -1))
+        # pca = extract_features(imgResize)
         # hehe2 = model.predict_proba(pca[0].reshape(1, -1))
         # Do model prediction
         # delete photo
@@ -219,16 +226,16 @@ def not_found_error(e):
 ################## Custom Function #####################
 
 
-def extract_features(images):
-    features = []
-    for image in images:
-        flattened_image = image.flatten()
-        features.append(flattened_image)
+# def extract_features(images):
+#     features = []
+#     for image in images:
+#         flattened_image = image.flatten()
+#         features.append(flattened_image)
 
-    pca = PCA(n_components=63)  # Ubah jumlah komponen sesuai kebutuhan
-    reduced_features = pca.fit_transform(features)
+#     pca = PCA(n_components=63)  # Ubah jumlah komponen sesuai kebutuhan
+#     reduced_features = pca.fit_transform(features)
 
-    return reduced_features
+#     return reduced_features
 
 if _name_ == '_main_':
     app.run()
