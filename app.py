@@ -198,9 +198,6 @@ def upload_image():
         image = Image.fromarray(hehe, 'RGB') # ubah pca dengan variable yang dinginkan
         image.save(file_path, format='PNG')
 
-
-       
-
         baseUrl = 'http://4.145.113.194:5000/static/'
         fileUrl = f'{baseUrl}{file.filename}'
         tdur = time.perf_counter_ns() - t0
