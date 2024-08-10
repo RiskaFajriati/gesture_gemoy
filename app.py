@@ -182,7 +182,7 @@ def upload_image():
         imgResize = cv2.resize(img, (150, 150))
         image_vector = imgResize.flatten()
         pca = model_2(image_vector)
-        hehe = model_1.predict(pca[0].reshape(1, -1))
+        hehe = model_1.predict(pca)
         # pca = extract_features(imgResize)
         # hehe2 = model.predict_proba(pca[0].reshape(1, -1))
         # Do model prediction
